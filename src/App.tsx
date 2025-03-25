@@ -5,9 +5,18 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-// Import the Capacitor App component safely
+// Import the Capacitor core first, then conditionally use the App
 import { Capacitor } from '@capacitor/core';
-import { App as CapacitorApp } from '@capacitor/app';
+// Only import App if we're in a native platform
+let CapacitorApp: any = null;
+if (Capacitor.isNativePlatform()) {
+  import('@capacitor/app').then(module => {
+    CapacitorApp = module.App;
+  }).catch(err => {
+    console.error('Error loading @capacitor/app:', err);
+  });
+}
+
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Attendance from "./pages/Attendance";
@@ -21,8 +30,8 @@ const AppContent = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Only add the back button listener if running on a mobile device
-    if (Capacitor.isNativePlatform()) {
+    // Only add the back button listener if running on a mobile device and CapacitorApp is loaded
+    if (Capacitor.isNativePlatform() && CapacitorApp) {
       const handleBackButton = () => {
         const currentPath = window.location.pathname;
         
@@ -35,10 +44,22 @@ const AppContent = () => {
         }
       };
 
-      const backButtonListener = CapacitorApp.addListener('backButton', handleBackButton);
+      let backButtonListener: any = null;
+      try {
+        backButtonListener = CapacitorApp.addListener('backButton', handleBackButton);
+      } catch (error) {
+        console.error('Error adding back button listener:', error);
+      }
 
       return () => {
-        backButtonListener.then(listener => listener.remove());
+        if (backButtonListener) {
+          try {
+            backButtonListener.then((listener: any) => listener.remove())
+              .catch((err: any) => console.error('Error removing listener:', err));
+          } catch (error) {
+            console.error('Error cleaning up back button listener:', error);
+          }
+        }
       };
     }
   }, [navigate]);
