@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Layers, Users, Calendar, BookOpen, ArrowUp } from 'lucide-react';
+import { Layers, Users, Calendar, BookOpen, ArrowUp, ChartBar } from 'lucide-react';
 import db from '@/db/database';
 import { Curso, Estudiante, Asistencia, SesionUsuario } from '@/models/types';
 
@@ -77,7 +77,7 @@ const Dashboard = () => {
       
       <main className="container px-4 py-8 mx-auto max-w-7xl">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Bienvenido, {usuario.nombre}</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Bienvenido, {usuario?.nombre}</h1>
           <p className="text-gray-500 mt-1">Gestiona la asistencia de tus cursos</p>
         </header>
         
@@ -89,7 +89,7 @@ const Dashboard = () => {
           </div>
         ) : (
           <>
-            <div className="grid gap-6 mb-8 md:grid-cols-3">
+            <div className="grid gap-6 mb-8 md:grid-cols-4">
               <Card className="glass-effect card-hover">
                 <CardContent className="pt-6">
                   <div className="flex items-center">
@@ -127,6 +127,20 @@ const Dashboard = () => {
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-500">Asistencias Hoy</p>
                       <h3 className="text-3xl font-bold">{asistenciasHoy}</h3>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="glass-effect card-hover" onClick={() => navigate('/reports')}>
+                <CardContent className="pt-6 cursor-pointer">
+                  <div className="flex items-center">
+                    <div className="p-3 rounded-full bg-amber-100 text-amber-600">
+                      <ChartBar className="h-8 w-8" />
+                    </div>
+                    <div className="ml-4">
+                      <p className="text-sm font-medium text-gray-500">Reportes</p>
+                      <h3 className="text-lg font-bold">Ver estadísticas</h3>
                     </div>
                   </div>
                 </CardContent>
