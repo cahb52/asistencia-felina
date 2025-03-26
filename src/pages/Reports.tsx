@@ -46,9 +46,10 @@ import {
 import db from '@/db/database';
 import { Curso, Estudiante, Asistencia, EstadoAsistencia } from '@/models/types';
 
+// Updated DateRange interface to make 'to' optional, matching react-day-picker's definition
 interface DateRange {
   from: Date;
-  to: Date | undefined;
+  to?: Date; // Changed from 'to: Date | undefined' to 'to?: Date'
 }
 
 interface AsistenciaStats {
